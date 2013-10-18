@@ -1,0 +1,19 @@
+Bonaparte is a simplified version of Diplomacy with only the three
+powers France, Germany and Russia, on a restricted board and without
+fleets. You can think of it as modeling the main Napoleonic wars
+(that's why I choose the name), but the restriction is mostly
+motivated by the desire to make the game even remotely tractable.
+
+It follows the original model of a spring and an autum turn every year
+and models the resource phase as a separate turn.  Play starts in
+spring of year one and ends after 30 years or if one player controls
+more than half of the eleven bases in the resource phase.
+
+At the start, every player controls their two home supply bases and
+has one army in each of them. Players can move all their (up to five)
+armies every move (this is what kills performance), and moves are
+simultaneous. Each army has three kinds of moves: it can move to an
+adjacent territory, it can support another army (independent of the
+power it belongs to) in holding its position, or it can support the
+move of an army (again, independent of the power it belongs to) moving
+to a territory that is adjacent to both army's current position.
