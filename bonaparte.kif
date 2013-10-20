@@ -416,6 +416,8 @@
 
 (<= (defense_strength ?t ?n)
     (true (army ?p ?t))
+    (ordered_move ?p2 ?any ?t)
+    (distinct ?p ?p2)
     (defended ?t war ?n))
 
 ;;(<= (defense_strength ?t 0)
@@ -471,18 +473,19 @@
     (attacked ?p ?t ?prev ?m))
 
 (<= (attack_strength ?p ?t ?n)
+    (ordered_move ?p ?any ?t)
     (attacked ?p ?t war ?n))
 
-(<= (next (supp_d ?p ?f ?t)) (supported_def ?p ?f ?t))
-(<= (next (supp_a ?p ?t ?f)) (supported_att ?p ?t ?f))
-;; (<= (next (att ?t ?from ?n)) (attacked russia ?t ?from ?n))
-;; (<= (next (def ?t ?from ?n)) (defended ?t ?from ?n))
+(<= (next (zz_supp_d ?p ?f ?t)) (supported_def ?p ?f ?t))
+(<= (next (zz_supp_a ?p ?t ?f)) (supported_att ?p ?t ?f))
+;; (<= (next (zz_att ?t ?from ?n)) (attacked russia ?t ?from ?n))
+;; (<= (next (zz_def ?t ?from ?n)) (defended ?t ?from ?n))
 
-(<= (next (str_att ?p ?t ?n)) (attack_strength ?p ?t ?n))
-(<= (next (str_def ?t ?n)) (defense_strength ?t ?n))
-(<= (next (void ?t)) (support_void ?t))
+(<= (next (zz_str_att ?p ?t ?n)) (attack_strength ?p ?t ?n))
+(<= (next (zz_str_def ?t ?n)) (defense_strength ?t ?n))
+(<= (next (zz_void ?t)) (support_void ?t))
 
-(<= (next (supp ?p ?t ?f)) (supported ?p ?t ?f))
+(<= (next (zz_supp ?p ?t ?f)) (supported ?p ?t ?f))
 
 (<= (destroyed ?t)
     (true (army ?p ?t))
@@ -491,6 +494,8 @@
     (lt ?def ?att))
 
 (<= (next (dst ?t ?a ?d)) (destroyed ?t) (attack_strength ?p ?t ?a) (defense_strength ?t ?d))
+
+; TODO: honor attack strength for contested moves
 
 (<= (contested ?to)
     (ordered_move ?p ?from ?to)
@@ -514,15 +519,20 @@
 (<= (chained ?p ?from ?to)
     (ordered_move ?p ?from ?to)
     (not (action_void ?from))
-    (uncontested ?p2 ?to ?to2)
+    (not (contested ?to))
+    (moved_away ?to)
     (role ?p2)
     (territory ?to2))
 
 (<= (occupied ?t)  (role ?p) (true (army ?p ?t)))
 (<= (moved_away ?t) (territory ?t) (destroyed ?t))
-(<= (moved_away ?t) (territory ?t) (uncontested ?p ?t ?anywhere) (moved_away ?anywhere))
+(<= (moved_away ?t) (territory ?t) (territory ?anywhere) (role ?p) (uncontested ?p ?t ?anywhere) (moved_away ?anywhere))
 (<= (moved_away ?t) (territory ?t) (chained ?p ?t ?anywhere))
 (<= (moved_away ?t) (territory ?t) (not (occupied ?t)))
+
+(<= (next (zz_unc ?p ?from ?t)) (uncontested ?p ?from ?t))
+(<= (next (zz_cha ?p ?from ?t)) (chained ?p ?from ?t))
+(<= (next (zz_ma ?t)) (moved_away ?t))
 
 (<= (next (army ?p ?to))
     (uncontested ?p ?from ?to)
@@ -546,7 +556,7 @@
 (adjacent bur ruh)
 (adjacent bur mun)
 (adjacent bel bur)
- (adjacent bel pic)
+(adjacent bel pic)
 (adjacent bel hol)
 (adjacent bel ruh)
 (adjacent hol kie)
