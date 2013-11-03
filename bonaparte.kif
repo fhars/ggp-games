@@ -619,66 +619,68 @@
     (defended ?t war ?n))
 
 ; The calculation of the attack strength follows the same pattern
-;
-; TODO: This is not exact, I may count support for a different attack
-; by the same player....
-(<= (supported_att ?p ?from ?t)
-    (ordered_move ?p ?any ?t)
-    (ordered_attack_support ?p2 ?from ?p ?any ?t))
+(<= (supported_att ?p ?from ?af ?to)
+    (ordered_move ?p ?any ?t0)
+    (ordered_attack_support ?p2 ?from ?p ?af ?to))
 ;
 ; Only the case analysis is different.
 ;
-(<= (attacked ?p bel ?to 1)
+(<= (attacked ?p bel bel ?to 1)
     (ordered_move ?p bel ?to))
 
-(<= (attacked ?p bel ?to 1)
+(<= (attacked ?p bel ?af ?to 1)
+    (territory ?af)
     (not (support_void bel))
-    (supported_att ?p bel ?to))
+    (supported_att ?p bel ?af ?to))
 
-(<= (attacked ?p bel ?to 0)
+(<= (attacked ?p bel ?af ?to 0)
+    (territory ?af)
     (role ?p)
     (territory ?to)
     (not (true (army ?p bel)))
-    (not (supported_att ?p bel ?to)))
+    (not (supported_att ?p bel ?af ?to)))
 
-(<= (attacked ?p bel ?to 0)
+(<= (attacked ?p bel ?af ?to 0)
+    (territory ?af)
     (support_void bel)
-    (supported_att ?p bel ?to))
+    (supported_att ?p bel ?af ?to))
 
-(<= (attacked ?p ?from ?to ?n)
+(<= (attacked ?p ?from ?af ?to ?n)
+    (territory ?af)
     (ordered_move ?p ?from ?to)
     (tenum ?prev ?from)
     (succ ?m ?n)
-    (attacked ?p ?prev ?to ?m))
+    (attacked ?p ?prev ?af ?to ?m))
 
-(<= (attacked ?p ?from ?to ?n)
+(<= (attacked ?p ?from ?af ?to ?n)
     (not (support_void ?from))
-    (supported_att ?p ?from ?to)
+    (supported_att ?p ?from ?af ?to)
     (tenum ?prev ?from)
     (succ ?m ?n)
-    (attacked ?p ?prev ?to ?m))
+    (attacked ?p ?prev ?af ?to ?m))
 
-(<= (attacked ?p ?from ?to ?m)
+(<= (attacked ?p ?from ?af ?to ?m)
+    (territory ?af)
     (not (ordered_move ?p ?from ?to))
-    (not (supported_att ?p ?from ?to))
+    (not (supported_att ?p ?from ?af ?to))
     (tenum ?prev ?from)
-    (attacked ?p ?prev ?to ?m))
+    (attacked ?p ?prev ?af ?to ?m))
 
-(<= (attacked ?p ?from ?to ?m)
+(<= (attacked ?p ?from ?af ?to ?m)
     (support_void ?from)
-    (supported_att ?p ?from ?to)
+    (supported_att ?p ?from ?af ?to)
     (tenum ?prev ?from)
-    (attacked ?p ?prev ?to ?m))
+    (attacked ?p ?prev ?af ?to ?m))
 
-(<= (attack_strength ?p ?to ?n)
-    (ordered_move ?p ?any ?to)
-    (attacked ?p war ?to ?n))
+(<= (attack_strength ?p ?af ?to ?n)
+    (ordered_move ?p ?af ?to)
+    (attacked ?p war ?af ?to ?n))
 
 ; An army is destroyed if the strength of the attack on it is larger
 ; than its defense strength
 (<= (destroyed ?t)
     (true (army ?p ?t))
-    (attack_strength ?p2 ?t ?att)
+    (attack_strength ?p2 ?af ?t ?att)
     (defense_strength ?t ?def)
     (lt ?def ?att))
 
@@ -688,8 +690,8 @@
 ; For this we first need a helper relation that we can then use in the
 ; negative condition in victorious:
 (<= (strength_matched ?p ?to)
-    (attack_strength ?p ?to ?n)
-    (attack_strength ?p2 ?to ?n2)
+    (attack_strength ?p ?af ?to ?n)
+    (attack_strength ?p2 ?af2 ?to ?n2)
     (le ?n ?n2)
     (distinct ?p ?p2))
 (<= (victorious ?p ?from ?to)
