@@ -703,68 +703,43 @@
     (ordered_move ?p2 ?from2 ?to)
     (distinct ?from ?from2))
 
-; A move is possible in several situations:
+; A move is possible:
 ;
-; // TODO this may be overly convoluted
-; 1. If it is not contested and the target territory is already empty.
+; If the move is not contested and the target territory is now empty
 (<= (move_possible ?p ?from ?to)
     (ordered_move ?p ?from ?to)
     (not (contested ?to))
-    (not (true (army ?any ?to))))
+    (now_empty ?to)
+    (role ?p2))
 ;
-; 2. If it is not contested and the army in the target territory has
-; been destroyed.
-;; (<= (move_possible ?p ?from ?to)
-;;     (ordered_move ?p ?from ?to)
-;;     (not (contested ?to))
-;;     (destroyed ?to))
-;
-; 3. If the army has maximal support for the move into that territory
-; and the territory is empty.
+; or if the army has maximal support for the move into the target
+; territory and that territory is now empty
 (<= (move_possible ?p ?from ?to)
     (ordered_move ?p ?from ?to)
     (victorious ?p ?from ?to)
-    (not (true (army ?any ?to))))
-;
-; 4. If the army has maximal support for the move into that territory
-; and the army in the target territory has been destroyed.
-;; (<= (move_possible ?p ?from ?to)
-;;     (ordered_move ?p ?from ?to)
-;;     (victorious ?p ?from ?to)
-;;     (destroyed ?to))
-;
-; 5. If the move is not contested and the army in that territory has
-; moved away
-(<= (chained ?p ?from ?to)
-    (ordered_move ?p ?from ?to)
-    (not (contested ?to))
-    (moved_away ?to)
-    (role ?p2)
-    (territory ?to2))
-;
-; 6. If the army has maximal support for the move into that territory
-; and the army in that territory has moved away
-(<= (chained ?p ?from ?to)
-    (ordered_move ?p ?from ?to)
-    (victorious ?p ?from ?to)
-    (moved_away ?to)
-    (role ?p2)
-    (territory ?to2))
+    (now_empty ?to)
+    (role ?p2))
 
+; A territory is now empty if there is no army there, that army has
+; been destroyed or can move away.
 (<= (occupied ?t)  (role ?p) (true (army ?p ?t)))
-(<= (moved_away ?t) (territory ?t) (destroyed ?t))
-(<= (moved_away ?t) (territory ?t) (territory ?anywhere) (role ?p) (move_possible ?p ?t ?anywhere) (moved_away ?anywhere))
-(<= (moved_away ?t) (territory ?t) (chained ?p ?t ?anywhere))
-(<= (moved_away ?t) (territory ?t) (not (occupied ?t)))
+(<= (now_empty ?t) (territory ?t) (destroyed ?t))
+(<= (now_empty ?t) (territory ?t) (move_possible ?p ?t ?anywhere))
+(<= (now_empty ?t) (territory ?t) (not (occupied ?t)))
 
-
+; With all that in place, we can now say where the armies are in the
+; next move after a movement phase:
+;
+; If an army can move in a territory, it will be there:
 (<= (next (army ?p ?to))
     (move_possible ?p ?from ?to)
-    (moved_away ?to)
     moving)
+;
+; If there is already an army in that territory, and it doesn't go
+; away, it will stay there:
 (<= (next (army ?p ?t))
     (true (army ?p ?t))
-    (not (moved_away ?t))
+    (not (now_empty ?t))
     moving)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1085,7 +1060,7 @@
 (succ 28 29)
 (succ 29 30)
 
-;; Some debug relations you may or may not want to enable
+;; ; Some debug relations you may or may not want to enable
 ;; (<= (next (zz_disb ?t)) (disbanded ?t))
 
 ;; (<= (next (zz_omv ?p ?f ?t)) (ordered_move ?p ?f ?t))
@@ -1102,5 +1077,4 @@
 ;; (<= (next (zz_supp ?p ?t ?f)) (supported ?p ?t ?f))
 ;; (<= (next (zz_dst ?t ?a ?d)) (destroyed ?t) (attack_strength ?p ?t ?a) (defense_strength ?t ?d))
 ;; (<= (next (zz_mp ?p ?from ?t)) (move_possible ?p ?from ?t))
-;; (<= (next (zz_cha ?p ?from ?t)) (chained ?p ?from ?t))
 ;; (<= (next (zz_ma ?t)) (moved_away ?t))
