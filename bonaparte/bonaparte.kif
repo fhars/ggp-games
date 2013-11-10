@@ -27,8 +27,7 @@
 
 (<= (inp ?from (move ?from ?to)) (adjacent ?from ?to))
 (<= (inp ?from (support_hold ?from ?to)) (adjacent ?from ?to))
-(<= (inp ?from (support_move ?from ?other ?attack_from ?to))
-    (role ?other)
+(<= (inp ?from (support_move ?from ?attack_from ?to))
     (adjacent ?attack_from ?to)
     (adjacent ?from ?to))
 (<= (input ?p ?m) (role ?p) (inp ?t ?m))
@@ -429,9 +428,9 @@
     (role ?anyone)
     (adjacent ?from ?to)
     moving)
-(<= (lgl ?p ?from (support_move ?from ?other ?attack_from ?to))
+(<= (lgl ?p ?from (support_move ?from ?attack_from ?to))
     (true (army ?p ?from))
-    (true (army ?other ?attack_from))
+    (true (army ?any ?attack_from))
     (adjacent ?from ?to)
     (adjacent ?attack_from ?to)
     (distinct ?from ?attack_from)
@@ -446,7 +445,7 @@
 ; does relation:
 (<= (ordered_move ?p ?from ?to) (does ?p (move ?from ?to)))
 (<= (ordered_support ?p ?from ?to) (does ?p (support_hold ?from ?to)))
-(<= (ordered_attack_support ?p ?from ?p2 ?af ?to) (does ?p (support_move ?from ?p2 ?af ?to)))
+(<= (ordered_attack_support ?p ?from ?af ?to) (does ?p (support_move ?from ?af ?to)))
 
 ; If a player has two lgl moves, it is legal to combine them in a
 ; single move, where the (tlt ?i ?j) condition says that the commands
@@ -467,8 +466,8 @@
 (<= (ordered_move ?p ?from ?to) (does ?p (combine2 ?other (move ?from ?to))))
 (<= (ordered_support ?p ?from ?to) (does ?p (combine2 (support_hold ?from ?to) ?other)))
 (<= (ordered_support ?p ?from ?to) (does ?p (combine2 ?other (support_hold ?from ?to))))
-(<= (ordered_attack_support ?p ?from ?p2 ?af ?to) (does ?p (combine2 (support_move ?from ?p2 ?af ?to) ?other)))
-(<= (ordered_attack_support ?p ?from ?p2 ?af ?to) (does ?p (combine2 ?other (support_move ?from ?p2 ?af ?to))))
+(<= (ordered_attack_support ?p ?from ?af ?to) (does ?p (combine2 (support_move ?from ?af ?to) ?other)))
+(<= (ordered_attack_support ?p ?from ?af ?to) (does ?p (combine2 ?other (support_move ?from ?af ?to))))
 
 ; The same thing for three lgl moves (this is where simpler GDL
 ; implementations start to fail, the online gamestepper completely
@@ -482,9 +481,9 @@
 (<= (ordered_support ?p ?from ?to) (does ?p (combine3 (support_hold ?from ?to) ?other ?other2)))
 (<= (ordered_support ?p ?from ?to) (does ?p (combine3 ?other (support_hold ?from ?to) ?other2)))
 (<= (ordered_support ?p ?from ?to) (does ?p (combine3 ?other ?other2 (support_hold ?from ?to))))
-(<= (ordered_attack_support ?p ?from ?p2 ?af ?to) (does ?p (combine3 (support_move ?from ?p2 ?af ?to) ?other ?other2)))
-(<= (ordered_attack_support ?p ?from ?p2 ?af ?to) (does ?p (combine3 ?other (support_move ?from ?p2 ?af ?to) ?other2)))
-(<= (ordered_attack_support ?p ?from ?p2 ?af ?to) (does ?p (combine3 ?other ?other2 (support_move ?from ?p2 ?af ?to))))
+(<= (ordered_attack_support ?p ?from ?af ?to) (does ?p (combine3 (support_move ?from ?af ?to) ?other ?other2)))
+(<= (ordered_attack_support ?p ?from ?af ?to) (does ?p (combine3 ?other (support_move ?from ?af ?to) ?other2)))
+(<= (ordered_attack_support ?p ?from ?af ?to) (does ?p (combine3 ?other ?other2 (support_move ?from ?af ?to))))
 
 ;; ; And if you are adventurous or have a really fast state machine
 ;; ; (like more than five orders of magnitude faster than the
@@ -507,10 +506,10 @@
 ;; (<= (ordered_support ?p ?from ?to) (does ?p (combine4 ?other (support_hold ?from ?to) ?other2 ?other3)))
 ;; (<= (ordered_support ?p ?from ?to) (does ?p (combine4 ?other ?other2 (support_hold ?from ?to) ?other3)))
 ;; (<= (ordered_support ?p ?from ?to) (does ?p (combine4 ?other ?other2 ?other3 (support_hold ?from ?to))))
-;; (<= (ordered_attack_support ?p ?from ?p2 ?af ?to) (does ?p (combine4 (support_move ?from ?p2 ?af ?to) ?other ?other2 ?other3)))
-;; (<= (ordered_attack_support ?p ?from ?p2 ?af ?to) (does ?p (combine4 ?other (support_move ?from ?p2 ?af ?to) ?other2 ?other3)))
-;; (<= (ordered_attack_support ?p ?from ?p2 ?af ?to) (does ?p (combine4 ?other ?other2 (support_move ?from ?p2 ?af ?to) ?other3)))
-;; (<= (ordered_attack_support ?p ?from ?p2 ?af ?to) (does ?p (combine4 ?other ?other2 ?other3 (support_move ?from ?p2 ?af ?to))))
+;; (<= (ordered_attack_support ?p ?from ?af ?to) (does ?p (combine4 (support_move ?from ?af ?to) ?other ?other2 ?other3)))
+;; (<= (ordered_attack_support ?p ?from ?af ?to) (does ?p (combine4 ?other (support_move ?from ?af ?to) ?other2 ?other3)))
+;; (<= (ordered_attack_support ?p ?from ?af ?to) (does ?p (combine4 ?other ?other2 (support_move ?from ?af ?to) ?other3)))
+;; (<= (ordered_attack_support ?p ?from ?af ?to) (does ?p (combine4 ?other ?other2 ?other3 (support_move ?from ?af ?to))))
 
 ;; ; Move five pieces simultaneously - almost brings the ggp-base prover state machine to its knees
 ;; (<= (legal ?p (combine5 ?move1 ?move2 ?move3 ?move4 ?move5))
@@ -526,11 +525,11 @@
 ;; (<= (ordered_support ?p ?from ?to) (does ?p (combine5 ?other ?other2 (support_hold ?from ?to) ?other3 ?other4)))
 ;; (<= (ordered_support ?p ?from ?to) (does ?p (combine5 ?other ?other2 ?other3 (support_hold ?from ?to) ?other4)))
 ;; (<= (ordered_support ?p ?from ?to) (does ?p (combine5 ?other ?other2 ?other3 ?other4 (support_hold ?from ?to))))
-;; (<= (ordered_attack_support ?p ?from ?p2 ?af ?to) (does ?p (combine5 (support_move ?from ?p2 ?af ?to) ?other ?other2 ?other3 ?other4)))
-;; (<= (ordered_attack_support ?p ?from ?p2 ?af ?to) (does ?p (combine5 ?other (support_move ?from ?p2 ?af ?to) ?other2 ?other3 ?other4)))
-;; (<= (ordered_attack_support ?p ?from ?p2 ?af ?to) (does ?p (combine5 ?other ?other2 (support_move ?from ?p2 ?af ?to) ?other3 ?other4)))
-;; (<= (ordered_attack_support ?p ?from ?p2 ?af ?to) (does ?p (combine5 ?other ?other2 ?other3 (support_move ?from ?p2 ?af ?to) ?other4)))
-;; (<= (ordered_attack_support ?p ?from ?p2 ?af ?to) (does ?p (combine5 ?other ?other2 ?other3 ?other4 (support_move ?from ?p2 ?af ?to))))
+;; (<= (ordered_attack_support ?p ?from ?af ?to) (does ?p (combine5 (support_move ?from ?af ?to) ?other ?other2 ?other3 ?other4)))
+;; (<= (ordered_attack_support ?p ?from ?af ?to) (does ?p (combine5 ?other (support_move ?from ?af ?to) ?other2 ?other3 ?other4)))
+;; (<= (ordered_attack_support ?p ?from ?af ?to) (does ?p (combine5 ?other ?other2 (support_move ?from ?af ?to) ?other3 ?other4)))
+;; (<= (ordered_attack_support ?p ?from ?af ?to) (does ?p (combine5 ?other ?other2 ?other3 (support_move ?from ?af ?to) ?other4)))
+;; (<= (ordered_attack_support ?p ?from ?af ?to) (does ?p (combine5 ?other ?other2 ?other3 ?other4 (support_move ?from ?af ?to))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -545,8 +544,7 @@
     (ordered_move ?p2 ?from ?t)
     (distinct ?p ?p2)
     (territory ?af)
-    (role ?p3)
-    (not (ordered_attack_support ?p ?t ?p3 ?af ?from)))
+    (not (ordered_attack_support ?p ?t ?af ?from)))
 
 ; Count the number of units defending a given one.
 ;
@@ -621,7 +619,7 @@
 ; The calculation of the attack strength follows the same pattern
 (<= (supported_att ?p ?from ?af ?to)
     (ordered_move ?p ?any ?t0)
-    (ordered_attack_support ?p2 ?from ?p ?af ?to))
+    (ordered_attack_support ?p2 ?from ?af ?to))
 ;
 ; Only the case analysis is different.
 ;
@@ -1073,7 +1071,7 @@
 
 ;; (<= (next (zz_omv ?p ?f ?t)) (ordered_move ?p ?f ?t))
 ;; (<= (next (zz_ohs ?p ?f ?t)) (ordered_support ?p ?f ?t))
-;; (<= (next (zz_osm ?p ?f ?p2 ?af ?t)) (ordered_attack_support ?p ?f ?p2 ?af ?t))
+;; (<= (next (zz_osm ?p ?f ?af ?t)) (ordered_attack_support ?p ?f ?af ?t))
 
 ;; (<= (next (zz_supp_d ?p ?f ?t)) (supported_def ?p ?f ?t))
 ;; (<= (next (zz_supp_a ?p ?t ?f)) (supported_att ?p ?t ?f))

@@ -36,7 +36,7 @@ public class BonaparteTest extends Assert {
         System.out.println("step  1:\n"+formatState(state));
         assertFalse(sm.isTerminal(state));
         assertEquals(10, sm.getGoal(state, france));
-        state = dippyMove(state, move("move pic bel"), move("support_hold sil pru"), move2("move lvn pru", "support_move war russia lvn pru"));
+        state = dippyMove(state, move("move pic bel"), move("support_hold sil pru"), move2("move lvn pru", "support_move war lvn pru"));
         System.out.println("step  2:\n"+formatState(state));
         assertFalse(sm.isTerminal(state));
         assertEquals(50, sm.getGoal(state, france));
@@ -48,7 +48,7 @@ public class BonaparteTest extends Assert {
         System.out.println("step  3:\n"+formatState(state));
         assertFalse(sm.isTerminal(state));
         assertEquals(50, sm.getGoal(state, france));
-        state = dippyMove(state, move2("move bel hol", "move par bur"), move("noop"), move2("move lvn pru", "support_move war russia lvn pru"));
+        state = dippyMove(state, move2("move bel hol", "move par bur"), move("noop"), move2("move lvn pru", "support_move war lvn pru"));
         System.out.println("step  4:\n"+formatState(state));
         assertFact(state, "( army russia pru )");
         state = dippyMove(state, move2("move hol kie", "move mar pie"), move("move sil gal"), move("move war sil"));
@@ -64,7 +64,7 @@ public class BonaparteTest extends Assert {
         assertEquals(move("terminate"), lm.get(0));
         state = dippyMove(state, move("noop"), move("terminate"), move("noop"));
         System.out.println("step  9:\n"+formatState(state));
-        state = dippyMove(state, move("move ber sil"), move("noop"), move2("move boh mun", "support_move sil russia boh mun"));
+        state = dippyMove(state, move("move ber sil"), move("noop"), move2("move boh mun", "support_move sil boh mun"));
         System.out.println("step 10:\n"+formatState(state));
         assertFact(state, "( army russia boh )");
         assertFact(state, "( army france mun )");
@@ -76,7 +76,7 @@ public class BonaparteTest extends Assert {
         System.out.println("step 12:\n"+formatState(state));
         state = dippyMove(state, move("move pie ven"), move("noop"), move2("move pru sil", "move sil boh"));
         System.out.println("step 13:\n"+formatState(state));
-        state = dippyMove(state, move2("move ber mun", "move mun tyr"), move("noop"), move2("move boh mun", "support_move sil russia boh mun"));
+        state = dippyMove(state, move2("move ber mun", "move mun tyr"), move("noop"), move2("move boh mun", "support_move sil boh mun"));
         System.out.println("step 14:\n"+formatState(state));
         assertFact(state, "( army france ber )");
         assertFact(state, "( army france tyr )");
