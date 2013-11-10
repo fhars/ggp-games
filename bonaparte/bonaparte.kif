@@ -399,14 +399,14 @@
 (<= (next (army ?p ?t)) (does ?p (build2 ?t ?s)) (true resource))
 (<= (next (army ?p ?t)) (does ?p (build2 ?s ?t)) (true resource))
 
-; It is always legal to do nothing in the movement phase.
-(<= (legal ?p noop) (role ?p) moving)
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; The movement phase: legal moves
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+; It is always legal to do nothing in the movement phase.
+(<= (legal ?p noop) (role ?p) moving)
 
 ; First we define a helper relation lgl for action commands for armies
 ; that has the same structure as the built-in legal relation, except
