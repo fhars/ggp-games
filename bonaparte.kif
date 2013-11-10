@@ -694,6 +694,12 @@
     (attack_strength ?p2 ?af2 ?to ?n2)
     (le ?n ?n2)
     (distinct ?p ?p2))
+; Additionally, if a player is intelligent enough to move two armies into
+; the same territory, no move will succeed
+(<= (strength_matched ?p ?to)
+    (ordered_move ?p ?from ?to)
+    (ordered_move ?p ?from2 ?to)
+    (distinct ?from ?from2))
 (<= (victorious ?p ?from ?to)
     (ordered_move ?p ?from ?to)
     (not (strength_matched ?p ?to)))
