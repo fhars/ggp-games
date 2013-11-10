@@ -732,7 +732,7 @@
 ; been destroyed or can move away.
 (<= (occupied ?t)  (role ?p) (true (army ?p ?t)))
 (<= (now_empty ?t) (territory ?t) (destroyed ?t))
-(<= (now_empty ?t) (territory ?t) (move_possible ?p ?t ?anywhere))
+(<= (now_empty ?t) (role ?p) (territory ?t) (territory ?anywhere) (move_possible ?p ?t ?anywhere))
 (<= (now_empty ?t) (territory ?t) (not (occupied ?t)))
 
 ; With all that in place, we can now say where the armies are in the
