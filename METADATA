@@ -1,0 +1,8 @@
+{
+  "gameName": "Bonaparte Diplomacy",
+  "numRoles": 3,
+  "roleNames":["france", "germany", "russia"],
+  "rulesheet": "bonaparte.kif",
+  "stylesheet": "bonaparte.xsl",
+  "description": "bonaparte.txt"
+}

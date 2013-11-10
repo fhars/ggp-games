@@ -10,10 +10,13 @@ spring of year one and ends after 30 years or if one player controls
 more than half of the eleven bases in the resource phase.
 
 At the start, every player controls their two home supply bases and
-has one army in each of them. Players can move all their (up to five)
-armies every move (this is what kills performance), and moves are
-simultaneous. Each army has three kinds of moves: it can move to an
-adjacent territory, it can support another army (independent of the
-power it belongs to) in holding its position, or it can support the
-move of an army (again, independent of the power it belongs to) moving
-to a territory that is adjacent to both army's current position.
+has one army in each of them. Theoretically, players should be able to
+move all their (up to five) armies every move, but for performance
+reasons the code for four and five piece moves is commented out. (The
+rules should still reliably kill all players that try to exhaustively
+enummerate move combinations.)  All moves are simultaneous. Each
+army has three kinds of moves: it can move to an adjacent territory,
+it can support another army (independent of the power it belongs to)
+in holding its position, or it can support the move of an army (again,
+independent of the power it belongs to) moving to a territory that is
+adjacent to both army's current position.
