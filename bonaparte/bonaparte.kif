@@ -420,7 +420,6 @@
 (<= (lgl ?p ?from (move ?from ?to))
     (true (army ?p ?from))
     (adjacent ?from ?to)
-    (not (army ?p ?to))
     moving)
 (<= (lgl ?p ?from (support_hold ?from ?to))
     (true (army ?p ?from))
