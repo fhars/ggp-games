@@ -1,0 +1,5 @@
+This game is a variant of Douglas Hofstader's "Mediocrity".  Each of
+the three player choses a number from 0 to 8. If a player's number is
+strictly between the other two numbers, this number is added to the
+player's score. After five rounds, the player whose score is strictly
+between the other player's scores is the winner.

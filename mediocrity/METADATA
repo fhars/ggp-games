@@ -1,0 +1,7 @@
+{
+  "gameName": "Mediocrity",
+  "numRoles": 3,
+  "roleNames":["a", "b", "c"],
+  "rulesheet": "mediocrity.kif",
+  "description": "mediocrity.txt"
+}
